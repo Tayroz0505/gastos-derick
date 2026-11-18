@@ -1,6 +1,6 @@
 // Dados do projeto no Supabase (Project Settings > API).
 // A chave "anon"/"publishable" é feita para ficar no site; a segurança vem das regras da tabela e do login.
 window.GASTOS_CONFIG = {
-  supabaseUrl: "COLE_AQUI_A_PROJECT_URL",
-  supabaseAnonKey: "COLE_AQUI_A_CHAVE_ANON"
+  supabaseUrl: "https://uxblekqitpvfwfoaedvs.supabase.co",
+  supabaseAnonKey: "sb_publishable_c9H1a3tXesc4uI9vvpQPUw_OyV6VDKP"
 };
