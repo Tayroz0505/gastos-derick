@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2f6fd6">
+<meta name="robots" content="noindex">
+<title>Gastos do Derick</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&display=swap">
+<style>
+/* Layout: app de uma coluna, duas abas (Anotar / Relatório); cartão central estreito no Anotar, grade larga no Relatório */
+:root{
+  --bg:#f3f6fb; --surface:#ffffff; --surface-2:#eaf0f8; --fg:#1d2a3a; --muted:#5d6b7d; --line:#d8e0ec;
+  --accent:#2f6fd6; --accent-ink:#ffffff; --accent-soft:#dfe9fb; --good:#1f8a5b; --bad:#c2453a;
+  --c-alimentacao:#f08c3a; --c-deslocamento:#3b82f6; --c-saude:#e0525d; --c-educacao:#8b5cf6;
+  --c-roupas:#d9468f; --c-lazer:#e3b316; --c-higiene:#14a3a3; --c-brinquedos:#3fae5a; --c-outros:#8a94a3;
+  --c-material:#a16207; --c-farmacia:#0e7490; --c-esportes:#65a30d; --c-presentes:#c026d3;
+  --c-cabelo:#475569; --c-mesada:#059669; --c-eletronicos:#4f46e5; --c-viagens:#0284c7;
+  --display:"Fredoka","Nunito Sans",system-ui,sans-serif; --body:"Nunito Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --radius:16px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1622; --surface:#172131; --surface-2:#1f2b3d; --fg:#e6edf6; --muted:#9aa8ba; --line:#2a3850;
+  --accent:#6ea0f5; --accent-ink:#0b1320; --accent-soft:#1f3354; --good:#4cc38a; --bad:#f07a70;
+  --c-alimentacao:#f5a05a; --c-deslocamento:#6aa2f8; --c-saude:#ef7b84; --c-educacao:#a88bfa;
+  --c-roupas:#ea70ae; --c-lazer:#f0cb4a; --c-higiene:#3cc4c4; --c-brinquedos:#62c97b; --c-outros:#a3acb9;
+  --c-material:#d4a24a; --c-farmacia:#38b2cc; --c-esportes:#94d03a; --c-presentes:#e16ae8;
+  --c-cabelo:#94a3b8; --c-mesada:#34d399; --c-eletronicos:#8b8df5; --c-viagens:#4fb3ea;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1622; --surface:#172131; --surface-2:#1f2b3d; --fg:#e6edf6; --muted:#9aa8ba; --line:#2a3850;
+  --accent:#6ea0f5; --accent-ink:#0b1320; --accent-soft:#1f3354; --good:#4cc38a; --bad:#f07a70;
+  --c-alimentacao:#f5a05a; --c-deslocamento:#6aa2f8; --c-saude:#ef7b84; --c-educacao:#a88bfa;
+  --c-roupas:#ea70ae; --c-lazer:#f0cb4a; --c-higiene:#3cc4c4; --c-brinquedos:#62c97b; --c-outros:#a3acb9;
+  --c-material:#d4a24a; --c-farmacia:#38b2cc; --c-esportes:#94d03a; --c-presentes:#e16ae8;
+  --c-cabelo:#94a3b8; --c-mesada:#34d399; --c-eletronicos:#8b8df5; --c-viagens:#4fb3ea;
+  color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{color-scheme:light}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5}
+.wrap{max-width:1040px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:20px}
+header.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+h1{font-family:var(--display);font-weight:600;font-size:28px;margin:0;letter-spacing:.2px;text-wrap:balance}
+h2{font-family:var(--display);font-weight:500;font-size:19px;margin:0}
+.tabs{display:flex;gap:4px;background:var(--surface-2);padding:4px;border-radius:999px}
+.tabs a{padding:8px 18px;border-radius:999px;text-decoration:none;color:var(--muted);font-weight:700}
+.tabs a[aria-current="page"]{background:var(--surface);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.tabs a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.notice{background:var(--accent-soft);border-radius:12px;padding:12px 16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.notice p{margin:0}
+.btn-link{background:none;border:0;color:var(--accent);font:inherit;font-weight:700;cursor:pointer;padding:4px 0}
+/* Anotar */
+.entry{background:var(--surface);border-radius:24px;padding:24px;display:flex;flex-direction:column;gap:22px;max-width:620px;width:100%;margin:0 auto;box-shadow:0 2px 12px rgba(20,40,80,.06)}
+.label{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
+.amount{display:flex;align-items:baseline;gap:8px;border-bottom:3px solid var(--line);padding-bottom:6px}
+.amount:focus-within{border-color:var(--accent)}
+.amount span{font-family:var(--display);font-size:30px;color:var(--muted)}
+.amount input{border:0;background:transparent;color:var(--fg);font-family:var(--display);font-size:52px;font-weight:600;width:100%;min-width:0;outline:none;font-variant-numeric:tabular-nums}
+.cats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.cat{border:2px solid var(--line);background:var(--surface);color:var(--fg);border-radius:14px;padding:12px 8px;font:inherit;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;min-height:76px;justify-content:center;text-align:center;line-height:1.2}
+.cat .dot{width:14px;height:14px;border-radius:50%;background:var(--c)}
+.cat[aria-pressed="true"]{border-color:var(--c);background:color-mix(in srgb,var(--c) 16%,var(--surface))}
+.meta{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;color:var(--muted)}
+.meta strong{color:var(--fg)}
+.meta input[type=date]{font:inherit;border:1px solid var(--line);border-radius:8px;padding:4px 8px;background:var(--surface);color:var(--fg)}
+.desc{font:inherit;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface);color:var(--fg);width:100%}
+.save{background:var(--accent);color:var(--accent-ink);border:0;border-radius:14px;padding:16px;font-family:var(--display);font-size:20px;font-weight:600;cursor:pointer}
+.save:disabled{opacity:.45;cursor:not-allowed}
+.status{min-height:22px;margin:0;font-weight:700;text-align:center}
+.status.ok{color:var(--good)} .status.err{color:var(--bad)}
+.recent{max-width:620px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+.list{background:var(--surface);border-radius:var(--radius);overflow:hidden}
+.row{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:12px;align-items:center;padding:12px 16px;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.row .dot{width:10px;height:10px;border-radius:50%;background:var(--c)}
+.row .what{min-width:0}
+.row .what b{display:block}
+.row .what small{color:var(--muted);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .val{font-weight:700;font-variant-numeric:tabular-nums}
+.del{background:none;border:0;color:var(--muted);cursor:pointer;font:inherit;font-size:13px;padding:6px}
+.del:hover{color:var(--bad)}
+.empty{padding:24px 16px;color:var(--muted);text-align:center}
+.tag{font-size:11px;font-weight:700;background:var(--surface-2);color:var(--muted);border-radius:6px;padding:1px 6px;margin-left:6px}
+/* Relatório */
+.rep-head{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.month-nav{display:flex;align-items:center;gap:6px}
+.month-nav button{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--fg);font-size:18px;cursor:pointer}
+.month-nav strong{font-family:var(--display);font-weight:500;font-size:20px;min-width:170px;text-align:center}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.kpi{background:var(--surface);border-radius:var(--radius);padding:16px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.kpi .big{font-family:var(--display);font-size:26px;font-weight:600;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.kpi small{color:var(--muted)}
+.up{color:var(--bad)} .down{color:var(--good)}
+.grid2{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px}
+.panel{background:var(--surface);border-radius:var(--radius);padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.panel p.sub{margin:-8px 0 0;color:var(--muted);font-size:13px}
+.chart{overflow-x:auto}
+.chart svg{display:block;width:100%;height:auto;min-width:520px}
+.hbars{display:flex;flex-direction:column;gap:10px}
+.hbar{display:grid;grid-template-columns:120px minmax(0,1fr) auto;gap:10px;align-items:center}
+.hbar .track{height:14px;background:var(--surface-2);border-radius:7px;overflow:hidden}
+.hbar .fill{height:100%;border-radius:7px;background:var(--c)}
+.hbar .v{font-variant-numeric:tabular-nums;font-weight:700;font-size:14px;text-align:right;white-space:nowrap}
+.hbar .v small{color:var(--muted);font-weight:600;margin-left:4px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:3px;background:var(--c);display:inline-block}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+thead th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+tfoot td{font-weight:700;border-bottom:0}
+td.zero{color:var(--line)}
+td.cur,th.cur{background:var(--accent-soft)}
+@media (max-width:760px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.grid2{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:420px){.cats{grid-template-columns:repeat(2,minmax(0,1fr))}.amount input{font-size:42px}.hbar{grid-template-columns:96px minmax(0,1fr) auto}.month-nav strong{min-width:130px;font-size:17px}}
+@media (prefers-reduced-motion:no-preference){.fill{transition:width .4s ease}}
+.login{max-width:420px;width:100%;margin:8vh auto 0;background:var(--surface);border-radius:24px;padding:28px 24px;display:flex;flex-direction:column;gap:14px;box-shadow:0 2px 12px rgba(20,40,80,.06)}
+.login input{font:inherit;border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--surface);color:var(--fg);width:100%}
+.login p{margin:0;color:var(--muted)}
+.right{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>Gastos do Derick</h1>
+    <div class="right" id="appNav" hidden>
+      <nav class="tabs" aria-label="Seções">
+        <a href="#anotar" id="tab-anotar">Anotar</a>
+        <a href="#relatorio" id="tab-relatorio">Relatório</a>
+      </nav>
+      <button class="btn-link" id="sair" type="button">Sair</button>
+    </div>
+  </header>
+
+  <form class="login" id="login" hidden novalidate>
+    <h2>Entrar</h2>
+    <p>Use o e-mail e a senha que você cadastrou no Supabase.</p>
+    <input type="email" id="email" placeholder="E-mail" autocomplete="username" required>
+    <input type="password" id="senha" placeholder="Senha" autocomplete="current-password" required>
+    <button class="save" type="submit" id="entrar">Entrar</button>
+    <p class="status" id="loginStatus" role="status" aria-live="polite"></p>
+  </form>
+
+  <div class="notice" id="offNotice" hidden><p id="offTxt">Não foi possível conectar ao banco de dados. Confira a internet e recarregue a página.</p></div>
+  <div id="app" hidden style="display:contents">
+
+  <!-- ANOTAR -->
+  <section id="view-anotar" aria-labelledby="tab-anotar" style="display:flex;flex-direction:column;gap:20px">
+    <form class="entry" id="form" novalidate>
+      <div>
+        <div class="label">Quanto foi?</div>
+        <label class="amount"><span>R$</span><input id="valor" inputmode="decimal" autocomplete="off" placeholder="0,00" aria-label="Valor em reais"></label>
+      </div>
+      <div>
+        <div class="label" id="catLabel" style="margin-bottom:10px">Com o quê?</div>
+        <div class="cats" id="cats" role="group" aria-labelledby="catLabel"></div>
+      </div>
+      <input class="desc" id="descricao" placeholder="Detalhe (opcional), ex.: lanche da escola" autocomplete="off">
+      <div class="meta">
+        <span>Data: <strong id="dataTxt"></strong></span>
+        <button class="btn-link" type="button" id="mudarData">mudar data</button>
+        <input type="date" id="dataInput" hidden aria-label="Data do gasto">
+      </div>
+      <button class="save" id="salvar" type="submit" disabled>Anotar gasto</button>
+      <p class="status" id="status" role="status" aria-live="polite"></p>
+    </form>
+
+    <div class="recent">
+      <h2>Últimos lançamentos</h2>
+      <div class="list" id="recentes"><div class="empty">Carregando…</div></div>
+    </div>
+  </section>
+
+  <!-- RELATÓRIO -->
+  <section id="view-relatorio" aria-labelledby="tab-relatorio" hidden style="flex-direction:column;gap:16px">
+    <div class="rep-head">
+      <h2>Relatório</h2>
+      <div class="month-nav">
+        <button type="button" id="prevM" aria-label="Mês anterior">‹</button>
+        <strong id="mesTxt"></strong>
+        <button type="button" id="nextM" aria-label="Próximo mês">›</button>
+      </div>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><span class="label">Gasto no mês</span><span class="big" id="kTotal">R$ 0,00</span><small id="kComp">&nbsp;</small></div>
+      <div class="kpi"><span class="label">Maior categoria</span><span class="big" id="kCat">—</span><small id="kCatV">&nbsp;</small></div>
+      <div class="kpi"><span class="label">Lançamentos</span><span class="big" id="kQtd">0</span><small id="kMedia">&nbsp;</small></div>
+      <div class="kpi"><span class="label">Total no ano</span><span class="big" id="kAno">R$ 0,00</span><small id="kAnoTxt">&nbsp;</small></div>
+    </div>
+
+    <div class="grid2">
+      <div class="panel">
+        <h2>Gastos mês a mês</h2>
+        <p class="sub">Últimos 12 meses, separados por categoria</p>
+        <div class="chart" id="chartMeses"></div>
+        <div class="legend" id="legend"></div>
+      </div>
+      <div class="panel">
+        <h2 id="catTitle">Por categoria</h2>
+        <p class="sub">Quanto cada categoria pesou no mês</p>
+        <div class="hbars" id="hbars"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Tabela por mês e categoria</h2>
+      <div class="tablewrap" id="tabela"></div>
+    </div>
+  </section>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+const CATS=[
+  {id:"Alimentação",c:"--c-alimentacao"},{id:"Deslocamento",c:"--c-deslocamento"},{id:"Saúde",c:"--c-saude"},
+  {id:"Educação",c:"--c-educacao"},{id:"Roupas e calçados",c:"--c-roupas"},{id:"Lazer",c:"--c-lazer"},
+  {id:"Higiene",c:"--c-higiene"},{id:"Brinquedos",c:"--c-brinquedos"},
+  {id:"Material escolar",c:"--c-material"},{id:"Farmácia",c:"--c-farmacia"},{id:"Esportes e cursos",c:"--c-esportes"},
+  {id:"Presentes e festas",c:"--c-presentes"},{id:"Cabeleireiro",c:"--c-cabelo"},{id:"Mesada",c:"--c-mesada"},
+  {id:"Eletrônicos e jogos",c:"--c-eletronicos"},{id:"Viagens e passeios",c:"--c-viagens"},
+  {id:"Outros",c:"--c-outros"}];
+const catColor=id=>`var(${(CATS.find(c=>c.id===id)||CATS.find(c=>c.id==="Outros")).c})`;
+const MESES=["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+const MES3=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
+const brl=v=>v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+const pad=n=>String(n).padStart(2,"0");
+const hojeISO=()=>{const d=new Date();return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`};
+const fmtData=iso=>{const [y,m,d]=iso.split("-");return `${d}/${m}/${y}`};
+const ym=iso=>iso.slice(0,7);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+let db=null, col=null, gastos=[], catSel=null, dataSel=hojeISO();
+const now=new Date(); let mesSel=`${now.getFullYear()}-${pad(now.getMonth()+1)}`;
+const $=id=>document.getElementById(id);
+
+/* ---------- rotas ---------- */
+function route(){
+  const v=location.hash==="#relatorio"?"relatorio":"anotar";
+  $("view-anotar").hidden=v!=="anotar"; $("view-anotar").style.display=v==="anotar"?"flex":"none";
+  $("view-relatorio").hidden=v!=="relatorio"; $("view-relatorio").style.display=v==="relatorio"?"flex":"none";
+  $("tab-anotar").toggleAttribute("aria-current",v==="anotar"); if(v==="anotar")$("tab-anotar").setAttribute("aria-current","page");
+  $("tab-relatorio").toggleAttribute("aria-current",v==="relatorio"); if(v==="relatorio")$("tab-relatorio").setAttribute("aria-current","page");
+  if(v==="relatorio")renderRelatorio();
+}
+addEventListener("hashchange",route);
+
+/* ---------- formulário ---------- */
+$("cats").innerHTML=CATS.map(c=>`<button type="button" class="cat" aria-pressed="false" data-cat="${esc(c.id)}" style="--c:var(${c.c})"><span class="dot"></span>${esc(c.id)}</button>`).join("");
+$("cats").addEventListener("click",e=>{const b=e.target.closest(".cat");if(!b)return;catSel=b.dataset.cat;
+  document.querySelectorAll(".cat").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));check();});
+function parseValor(){const t=$("valor").value.trim().replace(/[^\d,.]/g,"");if(!t)return NaN;
+  const n=t.includes(",")?parseFloat(t.replace(/\./g,"").replace(",",".")):parseFloat(t);return Math.round(n*100)/100}
+function check(){const v=parseValor();$("salvar").disabled=!(v>0&&catSel&&db);}
+$("valor").addEventListener("input",check);
+function showData(){$("dataTxt").textContent=dataSel===hojeISO()?`hoje, ${fmtData(dataSel)}`:fmtData(dataSel)}
+$("mudarData").addEventListener("click",()=>{const i=$("dataInput");i.hidden=!i.hidden;i.value=dataSel;if(!i.hidden)i.focus()});
+$("dataInput").addEventListener("change",e=>{if(e.target.value){dataSel=e.target.value;showData()}});
+showData();
+
+$("form").addEventListener("submit",async e=>{
+  e.preventDefault(); const valor=parseValor(); if(!(valor>0&&catSel&&col))return;
+  const st=$("status"); $("salvar").disabled=true; st.className="status"; st.textContent="Anotando…";
+  const doc={valor,categoria:catSel,data:dataSel,descricao:$("descricao").value.trim().slice(0,200),criadoEm:new Date().toISOString()};
+  try{ const {error}=await sb.from("gastos").insert({valor:doc.valor,categoria:doc.categoria,data:doc.data,descricao:doc.descricao}); if(error)throw error; await carregar();
+    st.className="status ok"; st.textContent=`Anotado: ${brl(valor)} em ${catSel}`;
+    $("valor").value=""; $("descricao").value=""; catSel=null; dataSel=hojeISO(); $("dataInput").hidden=true; showData();
+    document.querySelectorAll(".cat").forEach(x=>x.setAttribute("aria-pressed","false")); $("valor").focus();
+  }catch(err){ st.className="status err";
+    st.textContent="Não deu para anotar agora. Confira a internet e tente de novo.";
+  } check();
+});
+
+async function apagar(id){ try{const {error}=await sb.from("gastos").delete().eq("id",id); if(error)throw error; await carregar()}catch(e){ $("status").className="status err"; $("status").textContent="Não deu para apagar. Tente de novo."; } }
+$("recentes").addEventListener("click",e=>{const b=e.target.closest(".del");if(!b)return;
+  if(b.dataset.confirm){apagar(b.dataset.id)}else{b.dataset.confirm="1";b.textContent="confirmar?";setTimeout(()=>{if(b.isConnected){delete b.dataset.confirm;b.textContent="apagar"}},3000)}});
+
+function renderRecentes(){
+  const el=$("recentes");
+  if(!gastos.length){el.innerHTML=`<div class="empty">Nenhum gasto anotado ainda. Digite o valor, escolha a categoria e toque em <b>Anotar gasto</b>.</div>`;return}
+  el.innerHTML=gastos.slice(0,8).map(g=>`<div class="row" style="--c:${catColor(g.categoria)}"><span class="dot"></span>
+    <div class="what"><b>${esc(g.categoria)}${g.exemplo?'<span class="tag">exemplo</span>':""}</b><small>${fmtData(g.data)}${g.descricao?" · "+esc(g.descricao):""}</small></div>
+    <span class="val">${brl(g.valor)}</span><button class="del" type="button" data-id="${esc(g.id)}">apagar</button></div>`).join("");
+}
+
+/* ---------- relatório ---------- */
+function shiftMes(k,n){let [y,m]=k.split("-").map(Number);m+=n;while(m<1){m+=12;y--}while(m>12){m-=12;y++}return `${y}-${pad(m)}`}
+$("prevM").addEventListener("click",()=>{mesSel=shiftMes(mesSel,-1);renderRelatorio()});
+$("nextM").addEventListener("click",()=>{mesSel=shiftMes(mesSel,1);renderRelatorio()});
+const somaPor=(lista,f)=>lista.reduce((a,g)=>{const k=f(g);a[k]=(a[k]||0)+g.valor;return a},{});
+
+function renderRelatorio(){
+  const [y,m]=mesSel.split("-").map(Number);
+  $("mesTxt").textContent=`${MESES[m-1]} de ${y}`;
+  const doMes=gastos.filter(g=>ym(g.data)===mesSel), ant=gastos.filter(g=>ym(g.data)===shiftMes(mesSel,-1));
+  const tot=doMes.reduce((s,g)=>s+g.valor,0), totAnt=ant.reduce((s,g)=>s+g.valor,0);
+  $("kTotal").textContent=brl(tot);
+  if(totAnt>0){const d=(tot-totAnt)/totAnt*100;$("kComp").innerHTML=`<span class="${d>0?"up":"down"}">${d>0?"▲":"▼"} ${Math.abs(d).toFixed(0)}%</span> vs. ${MESES[(m+10)%12]} (${brl(totAnt)})`}
+  else $("kComp").textContent=`Sem gastos em ${MESES[(m+10)%12]}`;
+  const porCat=somaPor(doMes,g=>g.categoria); const ord=Object.entries(porCat).sort((a,b)=>b[1]-a[1]);
+  $("kCat").textContent=ord.length?ord[0][0]:"—"; $("kCatV").textContent=ord.length?`${brl(ord[0][1])} · ${Math.round(ord[0][1]/tot*100)}% do mês`:"Nada anotado neste mês";
+  $("kQtd").textContent=doMes.length; $("kMedia").textContent=doMes.length?`Média de ${brl(tot/doMes.length)} por gasto`:" ";
+  const doAno=gastos.filter(g=>g.data.startsWith(String(y))); $("kAno").textContent=brl(doAno.reduce((s,g)=>s+g.valor,0)); $("kAnoTxt").textContent=`De janeiro a dezembro de ${y}`;
+  // barras horizontais
+  $("catTitle").textContent=`Por categoria em ${MESES[m-1]}`;
+  $("hbars").innerHTML=ord.length?ord.map(([c,v])=>`<div class="hbar" style="--c:${catColor(c)}"><span>${esc(c)}</span><div class="track"><div class="fill" style="width:${(v/ord[0][1]*100).toFixed(1)}%"></div></div><span class="v">${brl(v)}<small>${Math.round(v/tot*100)}%</small></span></div>`).join("")
+    :`<div class="empty">Nenhum gasto em ${MESES[m-1]}.</div>`;
+  renderChart(); renderTabela(y);
+}
+
+function renderChart(){
+  const meses=Array.from({length:12},(_,i)=>shiftMes(mesSel,i-11));
+  const data=meses.map(k=>somaPor(gastos.filter(g=>ym(g.data)===k),g=>g.categoria));
+  const tots=data.map(d=>Object.values(d).reduce((a,b)=>a+b,0)); const max=Math.max(0,...tots);
+  const W=640,H=280,L=64,R=12,T=24,B=36,w=W-L-R,h=H-T-B;
+  const span=max||100, p=10**Math.floor(Math.log10(span/4)), step=p*[1,2,2.5,5,10].find(x=>x*p*4>=span);
+  const ticks=[];for(let t=0;t<=span+1e-9;t+=step)ticks.push(t); if(ticks[ticks.length-1]<span)ticks.push(ticks[ticks.length-1]+step);
+  const top=ticks[ticks.length-1]; const y=v=>T+h-h*v/top; const band=w/12, bw=Math.min(28,band*.6);
+  const fmtT=t=>"R$ "+t.toLocaleString("pt-BR",{maximumFractionDigits:0});
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Gastos por mês nos últimos 12 meses" font-family="Nunito Sans, system-ui, sans-serif" font-size="12">`;
+  ticks.forEach(t=>{s+=`<line x1="${L}" x2="${W-R}" y1="${y(t)}" y2="${y(t)}" stroke="var(--line)" stroke-width="1"/><text x="${L-8}" y="${y(t)+4}" text-anchor="end" fill="var(--muted)">${fmtT(t)}</text>`});
+  meses.forEach((k,i)=>{const x=L+i*band+(band-bw)/2; let acc=0;
+    CATS.forEach(c=>{const v=data[i][c.id]||0;if(!v)return;const y1=y(acc+v),hh=y(acc)-y1;acc+=v;
+      s+=`<rect x="${x}" y="${y1}" width="${bw}" height="${Math.max(0,hh-1)}" rx="3" fill="var(${c.c})"><title>${MES3[+k.slice(5)-1]}: ${esc(c.id)} ${brl(v)}</title></rect>`});
+    const cur=k===mesSel; const [yy,mm]=k.split("-");
+    s+=`<text x="${L+i*band+band/2}" y="${H-B+18}" text-anchor="middle" fill="${cur?"var(--fg)":"var(--muted)"}" font-weight="${cur?700:400}">${MES3[+mm-1]}</text>`;
+    if(mm==="01")s+=`<text x="${L+i*band+band/2}" y="${H-B+32}" text-anchor="middle" fill="var(--muted)" font-size="10">${yy}</text>`;
+    if(tots[i]>0&&cur)s+=`<text x="${L+i*band+band/2}" y="${y(tots[i])-6}" text-anchor="middle" fill="var(--fg)" font-weight="700">${fmtT(Math.round(tots[i]))}</text>`;
+  });
+  s+=`</svg>`; $("chartMeses").innerHTML=s;
+  const usadas=CATS.filter(c=>gastos.some(g=>g.categoria===c.id));
+  $("legend").innerHTML=(usadas.length?usadas:CATS).map(c=>`<span style="--c:var(${c.c})"><i></i>${esc(c.id)}</span>`).join("");
+}
+
+function renderTabela(y){
+  const meses=Array.from({length:12},(_,i)=>`${y}-${pad(i+1)}`);
+  const doAno=gastos.filter(g=>g.data.startsWith(String(y)));
+  const cell=(cat,k)=>doAno.filter(g=>g.categoria===cat&&ym(g.data)===k).reduce((s,g)=>s+g.valor,0);
+  const n=v=>v?v.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}):"–";
+  let t=`<table><thead><tr><th>Categoria (R$)</th>${meses.map((k,i)=>`<th class="${k===mesSel?"cur":""}">${MES3[i]}</th>`).join("")}<th>Total ${y}</th></tr></thead><tbody>`;
+  CATS.forEach(c=>{const vals=meses.map(k=>cell(c.id,k));const tt=vals.reduce((a,b)=>a+b,0);
+    t+=`<tr><td><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:var(${c.c});margin-right:8px"></span>${esc(c.id)}</td>${vals.map((v,i)=>`<td class="${v?"":"zero"} ${meses[i]===mesSel?"cur":""}">${n(v)}</td>`).join("")}<td><b>${n(tt)}</b></td></tr>`});
+  const colT=meses.map(k=>doAno.filter(g=>ym(g.data)===k).reduce((s,g)=>s+g.valor,0));
+  t+=`</tbody><tfoot><tr><td>Total</td>${colT.map((v,i)=>`<td class="${meses[i]===mesSel?"cur":""}">${n(v)}</td>`).join("")}<td>${n(colT.reduce((a,b)=>a+b,0))}</td></tr></tfoot></table>`;
+  $("tabela").innerHTML=t;
+}
+
+function renderAll(){
+  renderRecentes();
+  if(!$("view-relatorio").hidden)renderRelatorio();
+}
+
+route(); renderRelatorio();
+
+/* ---------- armazenamento ---------- */
+let sb=null;
+async function carregar(){
+  const {data,error}=await sb.from("gastos").select("id,valor,categoria,data,descricao,criado_em").order("data",{ascending:false}).order("criado_em",{ascending:false}).limit(5000);
+  if(error){ $("offNotice").hidden=false; return }
+  $("offNotice").hidden=true;
+  gastos=data.map(x=>({id:x.id,valor:+x.valor||0,categoria:String(x.categoria||"Outros"),data:/^\d{4}-\d{2}-\d{2}$/.test(x.data)?x.data:hojeISO(),descricao:x.descricao?String(x.descricao):"",criadoEm:String(x.criado_em||"")}));
+  renderAll();
+}
+function mostrar(logado){
+  $("login").hidden=logado; $("app").hidden=!logado; $("appNav").hidden=!logado;
+  if(logado){ db=col=sb; check(); route(); carregar(); } else { gastos=[]; db=col=null; }
+}
+(async()=>{
+  const cfg=window.GASTOS_CONFIG||{};
+  if(!window.supabase||!cfg.supabaseUrl||!cfg.supabaseAnonKey||cfg.supabaseUrl.includes("COLE_AQUI")){
+    $("offTxt").textContent="O site ainda não está ligado ao banco de dados (falta preencher o arquivo config.js)."; $("offNotice").hidden=false; return }
+  sb=window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseAnonKey);
+  const {data:{session}}=await sb.auth.getSession(); mostrar(!!session);
+  sb.auth.onAuthStateChange((_e,s)=>mostrar(!!s));
+  $("login").addEventListener("submit",async e=>{
+    e.preventDefault(); const st=$("loginStatus"); st.className="status"; st.textContent="Entrando…"; $("entrar").disabled=true;
+    const {error}=await sb.auth.signInWithPassword({email:$("email").value.trim(),password:$("senha").value});
+    $("entrar").disabled=false;
+    if(error){ st.className="status err"; st.textContent="E-mail ou senha incorretos."; } else { st.textContent=""; $("senha").value=""; }
+  });
+  $("sair").addEventListener("click",()=>sb.auth.signOut());
+  document.addEventListener("visibilitychange",()=>{ if(!document.hidden&&db)carregar() });
+})();
+</script>
+</body>
+</html>
