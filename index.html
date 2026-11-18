@@ -205,6 +205,8 @@ td.cur,th.cur{background:var(--accent-soft)}
         <h2 id="catTitle">Por categoria</h2>
         <p class="sub">Quanto cada categoria pesou no mês</p>
         <div class="hbars" id="hbars"></div>
+        <div class="label" style="margin-top:6px">Quem anotou</div>
+        <div class="legend" id="autores"></div>
       </div>
     </div>
 
@@ -286,7 +288,7 @@ function renderRecentes(){
   const el=$("recentes");
   if(!gastos.length){el.innerHTML=`<div class="empty">Nenhum gasto anotado ainda. Digite o valor, escolha a categoria e toque em <b>Anotar gasto</b>.</div>`;return}
   el.innerHTML=gastos.slice(0,8).map(g=>`<div class="row" style="--c:${catColor(g.categoria)}"><span class="dot"></span>
-    <div class="what"><b>${esc(g.categoria)}${g.exemplo?'<span class="tag">exemplo</span>':""}</b><small>${fmtData(g.data)}${g.descricao?" · "+esc(g.descricao):""}</small></div>
+    <div class="what"><b>${esc(g.categoria)}${g.exemplo?'<span class="tag">exemplo</span>':""}</b><small>${fmtData(g.data)}${g.autor?" · por "+esc(g.autor):""}${g.descricao?" · "+esc(g.descricao):""}</small></div>
     <span class="val">${brl(g.valor)}</span><button class="del" type="button" data-id="${esc(g.id)}">apagar</button></div>`).join("");
 }
 
@@ -312,6 +314,8 @@ function renderRelatorio(){
   $("catTitle").textContent=`Por categoria em ${MESES[m-1]}`;
   $("hbars").innerHTML=ord.length?ord.map(([c,v])=>`<div class="hbar" style="--c:${catColor(c)}"><span>${esc(c)}</span><div class="track"><div class="fill" style="width:${(v/ord[0][1]*100).toFixed(1)}%"></div></div><span class="v">${brl(v)}<small>${Math.round(v/tot*100)}%</small></span></div>`).join("")
     :`<div class="empty">Nenhum gasto em ${MESES[m-1]}.</div>`;
+  const porAutor={}; doMes.forEach(g=>{const k=g.autor||"Sem nome";porAutor[k]=porAutor[k]||{v:0,n:0};porAutor[k].v+=g.valor;porAutor[k].n++});
+  $("autores").innerHTML=Object.keys(porAutor).length?Object.entries(porAutor).sort((a,b)=>b[1].v-a[1].v).map(([k,o])=>`<span><b style="color:var(--fg)">${esc(k)}</b> ${brl(o.v)} (${o.n} ${o.n===1?"lançamento":"lançamentos"})</span>`).join(""):"<span>Ninguém anotou neste mês.</span>";
   renderChart(); renderTabela(y);
 }
 
@@ -362,10 +366,10 @@ route(); renderRelatorio();
 /* ---------- armazenamento ---------- */
 let sb=null;
 async function carregar(){
-  const {data,error}=await sb.from("gastos").select("id,valor,categoria,data,descricao,criado_em").order("data",{ascending:false}).order("criado_em",{ascending:false}).limit(5000);
+  const {data,error}=await sb.from("gastos").select("id,valor,categoria,data,descricao,criado_em,anotado_por").order("data",{ascending:false}).order("criado_em",{ascending:false}).limit(5000);
   if(error){ $("offNotice").hidden=false; return }
   $("offNotice").hidden=true;
-  gastos=data.map(x=>({id:x.id,valor:+x.valor||0,categoria:String(x.categoria||"Outros"),data:/^\d{4}-\d{2}-\d{2}$/.test(x.data)?x.data:hojeISO(),descricao:x.descricao?String(x.descricao):"",criadoEm:String(x.criado_em||"")}));
+  gastos=data.map(x=>({id:x.id,valor:+x.valor||0,categoria:String(x.categoria||"Outros"),data:/^\d{4}-\d{2}-\d{2}$/.test(x.data)?x.data:hojeISO(),descricao:x.descricao?String(x.descricao):"",criadoEm:String(x.criado_em||""),autor:x.anotado_por?String(x.anotado_por):""}));
   renderAll();
 }
 function mostrar(logado){
